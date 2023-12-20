@@ -17,12 +17,13 @@ public class ESCPOSPlugin {
 
     public String echo(String value) {
         try {
-            EscPosPrinter printer = new EscPosPrinter(BluetoothPrintersConnections.selectFirstPaired(), 203, 48f, 32);
+           // EscPosPrinter printer = new EscPosPrinter(BluetoothPrintersConnections.selectFirstPaired(), 203, 48f, 32);
         }
         catch (Exception e)
         {
 
         }
+
 
         Log.i("Echo", value);
         return value;
