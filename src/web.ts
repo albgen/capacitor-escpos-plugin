@@ -7,4 +7,9 @@ export class ESCPOSPluginWeb extends WebPlugin implements ESCPOSPluginPlugin {
     console.log('ECHO', options);
     return options;
   }
+
+  async HasBTPermissions(): Promise<{ result: boolean }> {
+    console.log('HasBTPermissions not implemented on WEB');
+    return { result: true};
+  }
 }
