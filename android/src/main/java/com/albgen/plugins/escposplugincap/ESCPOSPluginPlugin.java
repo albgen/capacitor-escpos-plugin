@@ -1,19 +1,12 @@
 package com.albgen.plugins.escposplugincap;
 
 import android.Manifest;
-import android.content.Context;
-import android.content.pm.PackageManager;
+import android.bluetooth.BluetoothAdapter;
 import android.util.Log;
-
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 
 import com.dantsu.escposprinter.connection.bluetooth.BluetoothConnections;
+import com.getcapacitor.Bridge;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.PermissionState;
 import com.getcapacitor.Plugin;
@@ -39,7 +32,11 @@ import com.getcapacitor.annotation.PermissionCallback;
 )
 public class ESCPOSPluginPlugin extends Plugin {
 
+    private static final Integer REQUEST_ENABLE_BT = 1;
     private ESCPOSPlugin implementation = new ESCPOSPlugin();
+
+    // Reference to the Bridge
+    protected Bridge bridge;
 
     // The same as defined in alias at @Permission
     private static final String BT_ALIAS = "BT";
@@ -50,38 +47,65 @@ public class ESCPOSPluginPlugin extends Plugin {
     }
 
     @PluginMethod
-    public Boolean HasBTPermissions()
-    {
-        return (getPermissionState(BT_ALIAS) == PermissionState.GRANTED);
+    public void BluetoothHasPermissions(PluginCall call) {
+        JSObject ret = new JSObject();
+        ret.put("result", BluetoothHasPermissions());
+        call.resolve(ret);
     }
 
     @PermissionCallback
     private void BTPermsCallback(PluginCall call) {
         if (getPermissionState(BT_ALIAS) == PermissionState.GRANTED) {
-            Log.i("Echo", "5");
+            Log.i("ESCPOSPlugin", "Trying to print..");
         } else {
-            Log.i("Echo", "6");
+            Log.i("ESCPOSPlugin", "Permission is required for bluetooth");
             call.reject("Permission is required for bluetooth");
         }
     }
 
     @PluginMethod
     public void echo(PluginCall call) {
+
+        requestPermissionForAliases(alsiasesPermissions, call, "BTPermsCallback");
+
         String value = call.getString("value");
         JSObject ret = new JSObject();
 
-        // requestAllPermissions(call, "BTPermsCallback");
-        requestPermissionForAliases(alsiasesPermissions, call, "BTPermsCallback");
-
         if (getPermissionState(BT_ALIAS) == PermissionState.GRANTED) {
-            Log.i("Echo", "3");
+            Log.i("ESCPOSPlugin", "3");
+
+            if (BluetoothIsEnabled()) return;
+
             BluetoothConnections printerConnections = new BluetoothConnections();
-            ret.put("value", printerConnections.getList());
+
+            ret.put("value", printerConnections.getList().length);
             call.resolve(ret);
             //ret.put("value", implementation.echo(value));
         } else {
-            Log.i("Echo", "7");
+            Log.i("ESCPOSPlugin", "7");
         }
-        Log.i("Echo", "4");
+        Log.i("ESCPOSPlugin", "4");
     }
+
+    @PluginMethod
+    public void BluetoothIsEnabled(PluginCall call) {
+        JSObject ret = new JSObject();
+        ret.put("result", BluetoothIsEnabled());
+        call.resolve(ret);
+    }
+
+    private boolean BluetoothHasPermissions() {
+        return getPermissionState(BT_ALIAS) == PermissionState.GRANTED;
+    }
+
+    private boolean BluetoothIsEnabled() {
+        BluetoothAdapter bluetoothManager = BluetoothAdapter.getDefaultAdapter();
+        // Here check only whether the Bluetooth hardware is off
+        if(bluetoothManager == null || !bluetoothManager.isEnabled()) {
+            // Bluetooth is off
+            return true;
+        }
+        return false;
+    }
+
 }
