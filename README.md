@@ -14,7 +14,8 @@ npx cap sync
 <docgen-index>
 
 * [`echo(...)`](#echo)
-* [`HasBTPermissions()`](#hasbtpermissions)
+* [`BluetoothHasPermissions()`](#bluetoothhaspermissions)
+* [`BluetoothIsEnabled()`](#bluetoothisenabled)
 
 </docgen-index>
 
@@ -36,10 +37,21 @@ echo(options: { value: string; }) => Promise<{ value: string; }>
 --------------------
 
 
-### HasBTPermissions()
+### BluetoothHasPermissions()
 
 ```typescript
-HasBTPermissions() => Promise<{ result: boolean; }>
+BluetoothHasPermissions() => Promise<{ result: boolean; }>
+```
+
+**Returns:** <code>Promise&lt;{ result: boolean; }&gt;</code>
+
+--------------------
+
+
+### BluetoothIsEnabled()
+
+```typescript
+BluetoothIsEnabled() => Promise<{ result: boolean; }>
 ```
 
 **Returns:** <code>Promise&lt;{ result: boolean; }&gt;</code>
