@@ -2,6 +2,7 @@ package com.albgen.plugins.escposplugincap;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Intent;
 import android.util.Log;
 
 
@@ -56,7 +57,7 @@ public class ESCPOSPluginPlugin extends Plugin {
     @PermissionCallback
     private void BTPermsCallback(PluginCall call) {
         if (getPermissionState(BT_ALIAS) == PermissionState.GRANTED) {
-            Log.i("ESCPOSPlugin", "Trying to print..");
+            Log.i("ESCPOSPlugin", "3..2");
         } else {
             Log.i("ESCPOSPlugin", "Permission is required for bluetooth");
             call.reject("Permission is required for bluetooth");
@@ -72,19 +73,26 @@ public class ESCPOSPluginPlugin extends Plugin {
         JSObject ret = new JSObject();
 
         if (getPermissionState(BT_ALIAS) == PermissionState.GRANTED) {
-            Log.i("ESCPOSPlugin", "3");
+            Log.i("ESCPOSPlugin", " True -> getPermissionState(BT_ALIAS) == PermissionState.GRANTED");
 
-            if (BluetoothIsEnabled()) return;
+//            if (BluetoothIsEnabled()) return;
 
             BluetoothConnections printerConnections = new BluetoothConnections();
+
+            if ( printerConnections.getList() == null)
+            {
+                ret.put("value", "Disabled Bluetooth?");
+                call.resolve(ret);
+                return;
+            }
 
             ret.put("value", printerConnections.getList().length);
             call.resolve(ret);
             //ret.put("value", implementation.echo(value));
         } else {
-            Log.i("ESCPOSPlugin", "7");
+            Log.i("ESCPOSPlugin", " False -> getPermissionState(BT_ALIAS) == PermissionState.GRANTED");
         }
-        Log.i("ESCPOSPlugin", "4");
+        Log.i("ESCPOSPlugin", " end of echo call!");
     }
 
     @PluginMethod
@@ -100,11 +108,13 @@ public class ESCPOSPluginPlugin extends Plugin {
 
     private boolean BluetoothIsEnabled() {
         BluetoothAdapter bluetoothManager = BluetoothAdapter.getDefaultAdapter();
+        Log.i("ESCPOSPlugin", (bluetoothManager == null) + " < - (bluetoothManager == null) ");
+
         // Here check only whether the Bluetooth hardware is off
-        if(bluetoothManager == null || !bluetoothManager.isEnabled()) {
-            // Bluetooth is off
-            return true;
+        if(bluetoothManager != null) {
+            return bluetoothManager.isEnabled();
         }
+        // Bluetooth is off by convention is bluetoothManager is not defined
         return false;
     }
 
