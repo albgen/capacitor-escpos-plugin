@@ -1,6 +1,6 @@
 {
   "name": "@albgen/capacitor-escpos-plugin",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "Send high level print commands to ESC/POS Printers",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
