@@ -16,6 +16,8 @@ npx cap sync
 * [`echo(...)`](#echo)
 * [`BluetoothHasPermissions()`](#bluetoothhaspermissions)
 * [`BluetoothIsEnabled()`](#bluetoothisenabled)
+* [`ListPrinters(...)`](#listprinters)
+* [Interfaces](#interfaces)
 
 </docgen-index>
 
@@ -57,5 +59,26 @@ BluetoothIsEnabled() => Promise<{ result: boolean; }>
 **Returns:** <code>Promise&lt;{ result: boolean; }&gt;</code>
 
 --------------------
+
+
+### ListPrinters(...)
+
+```typescript
+ListPrinters(options: { type: string; }) => Promise<Printers>
+```
+
+| Param         | Type                           |
+| ------------- | ------------------------------ |
+| **`options`** | <code>{ type: string; }</code> |
+
+**Returns:** <code>Promise&lt;<a href="#printers">Printers</a>&gt;</code>
+
+--------------------
+
+
+### Interfaces
+
+
+#### Printers
 
 </docgen-api>
