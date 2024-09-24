@@ -66,6 +66,7 @@ public class ESCPOSPlugin extends Plugin {
 
     @Override
     public void load() {
+        Log.i("ESCPOSPlugin", "loading the plugin...");
     }
 
     @PluginMethod
@@ -80,20 +81,22 @@ public class ESCPOSPlugin extends Plugin {
         if (getPermissionState(BT_ALIAS) == PermissionState.GRANTED) {
             Log.i("ESCPOSPlugin", "PermissionState.GRANTED already");
         } else {
-            Log.i("ESCPOSPlugin", "Permission is required for bluetooth");
-            call.reject("Permission is required for bluetooth");
+            if (getPermissionState(BT_ALIAS) == PermissionState.DENIED) {
+                //Log.i("ESCPOSPlugin", "Permission is required for bluetooth");
+                call.reject("You have denied the permission. Go to app settings and give the permission manually. In alternative you can clear the data and the system will ask you again.");
+            }
         }
     }
 
     @PluginMethod
-    public void bluetoothIsEnabled(PluginCall call) {
+    public void bluetoothIsEnabled(PluginCall call) throws Exception {
         JSObject ret = new JSObject();
         ret.put("result", bluetoothIsEnabled());
         call.resolve(ret);
     }
 
     @PluginMethod
-    public void listPrinters(PluginCall call){
+    public void listPrinters(PluginCall call) throws Exception{
         JSObject printers = new JSObject();
         String type = call.getString("type");
         if (type.equals("bluetooth")) {
@@ -141,7 +144,7 @@ public class ESCPOSPlugin extends Plugin {
         call.resolve(printers);
     }
 
-//Remove start - Test only
+    //Remove start - Test only
     @PluginMethod
     public void echo(PluginCall call) {
 
@@ -171,7 +174,6 @@ public class ESCPOSPlugin extends Plugin {
         }
         Log.i("ESCPOSPlugin", " end of echo call!");
     }
-
     @PluginMethod
     public void throwException(PluginCall call) throws Exception {
         throw new Exception("Exception from java");
@@ -183,7 +185,7 @@ public class ESCPOSPlugin extends Plugin {
 //Remove end - Test only
 
     @PluginMethod
-    public void printFormattedText(PluginCall call) throws JSONException {
+    public void printFormattedText(PluginCall call) throws Exception {
         try
         {
             JSONObject data = new JSObject();
@@ -217,11 +219,10 @@ public class ESCPOSPlugin extends Plugin {
         catch(Exception ex)
         {
             call.reject(ex.getMessage(),"COD01");
-            return;
         }
     }
 
-    private JSONObject getEncoding(JSONObject data) throws JSONException {
+    private JSONObject getEncoding(JSONObject data) throws Exception {
         EscPosPrinter printer = this.getPrinter(data);
         JSONObject retData = null;
         EscPosCharsetEncoding encoding = printer.getEncoding();
@@ -235,12 +236,12 @@ public class ESCPOSPlugin extends Plugin {
         return retData;
     }
 
-    private void disconnectPrinter(JSONObject data) throws JSONException {
+    private void disconnectPrinter(JSONObject data) throws Exception {
         EscPosPrinter printer = this.getPrinter(data);
         printer.disconnectPrinter();
     }
 
-    private EscPosPrinter getPrinter(JSONObject data) throws JSONException {
+    private EscPosPrinter getPrinter(JSONObject data) throws Exception {
         DeviceConnection deviceConnection = this.getPrinterConnection(data);
         if (deviceConnection == null) {
             throw new JSONException("Device not found");
@@ -259,9 +260,6 @@ public class ESCPOSPlugin extends Plugin {
                 );
             }
         } catch (Exception exception) {
-//            callbackContext.error(new JSONObject(new HashMap<String, Object>() {{
-//                put("error", exception.getMessage());
-//            }}));
             throw new JSONException(exception.getMessage());
         }
 
@@ -274,14 +272,11 @@ public class ESCPOSPlugin extends Plugin {
                     charsetEncoding
             );
         } catch (Exception e) {
-//            callbackContext.error(new JSONObject(new HashMap<String, Object>() {{
-//                put("error", e.getMessage());
-//            }}));
             throw new JSONException(e.getMessage());
         }
     }
 
-    private DeviceConnection getPrinterConnection(JSONObject data) throws JSONException {
+    private DeviceConnection getPrinterConnection(JSONObject data) throws Exception {
         String type = data.getString("type");
         String id = data.getString("id");
         String hashKey = type + "-" + id;
@@ -304,7 +299,7 @@ public class ESCPOSPlugin extends Plugin {
         return deviceConnection;
     }
 
-    private DeviceConnection getDevice(String type, String id, String address, int port) {
+    private DeviceConnection getDevice(String type, String id, String address, int port) throws Exception {
         String hashKey = type + "-" + id;
         if (this.connections.containsKey(hashKey)) {
             DeviceConnection connection = this.connections.get(hashKey);
@@ -318,12 +313,10 @@ public class ESCPOSPlugin extends Plugin {
         }
 
         if (type.equals("bluetooth")) {
-            if (!this.checkBluetooth()) {
-                return null;
-            }
+            this.checkBluetooth();
             if (!bluetoothHasPermissions()) {
                 //Missing permission for " + Manifest.permission.DISABLE_KEYGUARD);
-                return null;
+                throw new JSONException("Missing permission for bluetooth");
             }
             if (id.equals("first")) {
                 return BluetoothPrintersConnections.selectFirstPaired();
@@ -348,7 +341,7 @@ public class ESCPOSPlugin extends Plugin {
         return null;
     }
 
-    private void bytesToHexadecimalString(JSONObject data) throws JSONException {
+    private void bytesToHexadecimalString(JSONObject data) throws Exception {
         EscPosPrinter printer = this.getPrinter(data);
         try {
             byte[] bytes = (byte[]) data.get("bytes");
@@ -365,27 +358,26 @@ public class ESCPOSPlugin extends Plugin {
         return getPermissionState(BT_ALIAS) == PermissionState.GRANTED;
     }
 
-    private boolean bluetoothIsEnabled() {
-        BluetoothAdapter bluetoothManager = BluetoothAdapter.getDefaultAdapter();
-        Log.i("ESCPOSPlugin", (bluetoothManager == null) + " < - (bluetoothManager == null) ");
+    private boolean bluetoothIsEnabled() throws Exception {
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        Log.i("ESCPOSPlugin", (mBluetoothAdapter == null) + " < - (bluetoothManager == null) ");
+        if (mBluetoothAdapter == null)
+            throw new Exception("Device doesn't support Bluetooth!");
 
         // Here check only whether the Bluetooth hardware is off
-        if(bluetoothManager != null) {
-            return bluetoothManager.isEnabled();
+        if(mBluetoothAdapter != null) {
+            return mBluetoothAdapter.isEnabled();
         }
         // Bluetooth is off by convention is bluetoothManager is not defined
         return false;
     }
 
-    private boolean checkBluetooth() {
+    private void checkBluetooth() throws Exception {
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
-            //"Device doesn't support Bluetooth!");
-            return false;
+            throw new Exception("Device doesn't support Bluetooth!");
         } else if (!mBluetoothAdapter.isEnabled()) {
-            //Device not enabled Bluetooth!");
-            return false;
+            throw new Exception("Device not enabled Bluetooth!");
         }
-        return true;
     }
 }
