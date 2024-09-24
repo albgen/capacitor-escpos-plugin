@@ -14,9 +14,9 @@ npx cap sync
 <docgen-index>
 
 * [`echo(...)`](#echo)
-* [`BluetoothHasPermissions()`](#bluetoothhaspermissions)
-* [`BluetoothIsEnabled()`](#bluetoothisenabled)
-* [`ListPrinters(...)`](#listprinters)
+* [`bluetoothHasPermissions()`](#bluetoothhaspermissions)
+* [`bluetoothIsEnabled()`](#bluetoothisenabled)
+* [`listPrinters(...)`](#listprinters)
 * [`printFormattedText(...)`](#printformattedtext)
 * [`rejectTest()`](#rejecttest)
 * [`throwException()`](#throwexception)
@@ -42,10 +42,10 @@ echo(options: { value: string; }) => Promise<{ value: string; }>
 --------------------
 
 
-### BluetoothHasPermissions()
+### bluetoothHasPermissions()
 
 ```typescript
-BluetoothHasPermissions() => Promise<{ result: boolean; }>
+bluetoothHasPermissions() => Promise<{ result: boolean; }>
 ```
 
 **Returns:** <code>Promise&lt;{ result: boolean; }&gt;</code>
@@ -53,10 +53,10 @@ BluetoothHasPermissions() => Promise<{ result: boolean; }>
 --------------------
 
 
-### BluetoothIsEnabled()
+### bluetoothIsEnabled()
 
 ```typescript
-BluetoothIsEnabled() => Promise<{ result: boolean; }>
+bluetoothIsEnabled() => Promise<{ result: boolean; }>
 ```
 
 **Returns:** <code>Promise&lt;{ result: boolean; }&gt;</code>
@@ -64,10 +64,10 @@ BluetoothIsEnabled() => Promise<{ result: boolean; }>
 --------------------
 
 
-### ListPrinters(...)
+### listPrinters(...)
 
 ```typescript
-ListPrinters(options: { type: string; }) => Promise<Printers>
+listPrinters(options: { type: string; }) => Promise<Printers>
 ```
 
 | Param         | Type                           |
