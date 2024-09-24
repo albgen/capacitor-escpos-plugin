@@ -52,7 +52,7 @@
     "@capacitor/ios": "^6.0.0",
     "@ionic/eslint-config": "^0.4.0",
     "@ionic/prettier-config": "^4.0.0",
-    "@ionic/swiftlint-config": "^1.1.2",
+    "@ionic/swiftlint-config": "^2.0.0",
     "eslint": "^9.10.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.30.0",
@@ -62,7 +62,7 @@
     "prettier-plugin-java": "^2.6.4",
     "rimraf": "^6.0.1",
     "rollup": "^4.21.2",
-    "swiftlint": "^1.0.1",
+    "swiftlint": "^2.0.0",
     "typescript": "^5.5.4"
   },
   "peerDependencies": {
