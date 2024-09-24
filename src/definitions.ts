@@ -1,8 +1,8 @@
 export interface ESCPOSPluginPlugin {
     echo(options: {value: string;}): Promise<{value: string;}>;
-    BluetoothHasPermissions(): Promise<{result: boolean;}>;
-    BluetoothIsEnabled(): Promise<{result: boolean;}>;
-    ListPrinters(options: {type: string;}): Promise<Printers>;
+    bluetoothHasPermissions(): Promise<{result: boolean;}>;
+    bluetoothIsEnabled(): Promise<{result: boolean;}>;
+    listPrinters(options: {type: string;}): Promise<Printers>;
     printFormattedText(options: { type: string; id: string; address?: string; port?: string; action?: string; text: string, mmFeedPaper?:String}): Promise<void>;
     rejectTest(): Promise<void>;
     throwException(): Promise<void>;

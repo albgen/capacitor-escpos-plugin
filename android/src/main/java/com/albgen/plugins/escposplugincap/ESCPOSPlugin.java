@@ -69,7 +69,7 @@ public class ESCPOSPlugin extends Plugin {
     }
 
     @PluginMethod
-    public void BluetoothHasPermissions(PluginCall call) {
+    public void bluetoothHasPermissions(PluginCall call) {
         JSObject ret = new JSObject();
         ret.put("result", bluetoothHasPermissions());
         call.resolve(ret);
@@ -86,44 +86,14 @@ public class ESCPOSPlugin extends Plugin {
     }
 
     @PluginMethod
-    public void echo(PluginCall call) {
-
-        requestPermissionForAliases(alsiasesPermissions, call, "BTPermsCallback");
-        String value = call.getString("value");
-        JSObject ret = new JSObject();
-
-        if (getPermissionState(BT_ALIAS) == PermissionState.GRANTED) {
-            Log.i("ESCPOSPlugin", " True -> getPermissionState(BT_ALIAS) == PermissionState.GRANTED");
-
-//            if (BluetoothIsEnabled()) return;
-
-            BluetoothConnections printerConnections = new BluetoothConnections();
-
-            if ( printerConnections.getList() == null)
-            {
-                ret.put("value", "Disabled Bluetooth?");
-                call.resolve(ret);
-                return;
-            }
-
-            ret.put("value", printerConnections.getList().length);
-            call.resolve(ret);
-            //ret.put("value", implementation.echo(value));
-        } else {
-            Log.i("ESCPOSPlugin", " False -> getPermissionState(BT_ALIAS) == PermissionState.GRANTED");
-        }
-        Log.i("ESCPOSPlugin", " end of echo call!");
-    }
-
-    @PluginMethod
-    public void BluetoothIsEnabled(PluginCall call) {
+    public void bluetoothIsEnabled(PluginCall call) {
         JSObject ret = new JSObject();
         ret.put("result", bluetoothIsEnabled());
         call.resolve(ret);
     }
 
     @PluginMethod
-    public void ListPrinters(PluginCall call){
+    public void listPrinters(PluginCall call){
         JSObject printers = new JSObject();
         String type = call.getString("type");
         if (type.equals("bluetooth")) {
@@ -171,6 +141,37 @@ public class ESCPOSPlugin extends Plugin {
         call.resolve(printers);
     }
 
+//Remove start - Test only
+    @PluginMethod
+    public void echo(PluginCall call) {
+
+        requestPermissionForAliases(alsiasesPermissions, call, "BTPermsCallback");
+        String value = call.getString("value");
+        JSObject ret = new JSObject();
+
+        if (getPermissionState(BT_ALIAS) == PermissionState.GRANTED) {
+            Log.i("ESCPOSPlugin", " True -> getPermissionState(BT_ALIAS) == PermissionState.GRANTED");
+
+//            if (BluetoothIsEnabled()) return;
+
+            BluetoothConnections printerConnections = new BluetoothConnections();
+
+            if ( printerConnections.getList() == null)
+            {
+                ret.put("value", "Disabled Bluetooth?");
+                call.resolve(ret);
+                return;
+            }
+
+            ret.put("value", printerConnections.getList().length);
+            call.resolve(ret);
+            //ret.put("value", implementation.echo(value));
+        } else {
+            Log.i("ESCPOSPlugin", " False -> getPermissionState(BT_ALIAS) == PermissionState.GRANTED");
+        }
+        Log.i("ESCPOSPlugin", " end of echo call!");
+    }
+
     @PluginMethod
     public void throwException(PluginCall call) throws Exception {
         throw new Exception("Exception from java");
@@ -179,10 +180,10 @@ public class ESCPOSPlugin extends Plugin {
     public void rejectTest(PluginCall call) throws Exception {
         call.reject("Error msg",new Exception("exception object"));
     }
+//Remove end - Test only
 
     @PluginMethod
     public void printFormattedText(PluginCall call) throws JSONException {
-
         try
         {
             JSONObject data = new JSObject();

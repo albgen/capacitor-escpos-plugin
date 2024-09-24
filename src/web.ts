@@ -16,7 +16,7 @@ export class ESCPOSPluginWeb extends WebPlugin implements ESCPOSPluginPlugin {
     return Promise.resolve();
   }
 
-  async ListPrinters(options: { type: string; }): Promise<Printers> {
+  async listPrinters(options: { type: string; }): Promise<Printers> {
     console.log('ListPrinters not implemented on WEB', options);
     return Promise.resolve({});
   }
@@ -26,12 +26,12 @@ export class ESCPOSPluginWeb extends WebPlugin implements ESCPOSPluginPlugin {
     return options;
   }
 
-  async BluetoothHasPermissions(): Promise<{ result: boolean }> {
+  async bluetoothHasPermissions(): Promise<{ result: boolean }> {
     console.log('BluetoothHasPermissions not implemented on WEB');
     return { result: true};
   }
 
-  async BluetoothIsEnabled(): Promise<{ result: boolean }> {
+  async bluetoothIsEnabled(): Promise<{ result: boolean }> {
     console.log('BluetoothIsEnabled not implemented on WEB');
     return { result: true};
   }
