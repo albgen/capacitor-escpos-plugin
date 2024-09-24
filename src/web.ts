@@ -1,8 +1,10 @@
 import { WebPlugin } from '@capacitor/core';
 
-import type { ESCPOSPluginPlugin, Printers } from './definitions';
+import type { ESCPOSPlugin, Printers } from './definitions';
 
-export class ESCPOSPluginWeb extends WebPlugin implements ESCPOSPluginPlugin {
+export class ESCPOSPluginWeb extends WebPlugin implements ESCPOSPlugin {
+
+
   async rejectTest(): Promise<void> {
     console.log('rejectTest not implemented on WEB');
     return Promise.resolve();
@@ -13,6 +15,11 @@ export class ESCPOSPluginWeb extends WebPlugin implements ESCPOSPluginPlugin {
   }
   async printFormattedText(options: { type: string; id: string; address?: string; port?: string; action?: string; text: string; mmFeedPaper?: String; }): Promise<void> {
     console.log('printFormattedText not implemented on WEB' + options);
+    return Promise.resolve();
+  }
+
+  async logCat(options: { message: string; }): Promise<void> {
+    console.log('logCat not implemented on WEB', options);
     return Promise.resolve();
   }
 

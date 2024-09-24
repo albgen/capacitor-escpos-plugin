@@ -81,10 +81,10 @@ public class ESCPOSPlugin extends Plugin {
         if (getPermissionState(BT_ALIAS) == PermissionState.GRANTED) {
             Log.i("ESCPOSPlugin", "PermissionState.GRANTED already");
         } else {
-            if (getPermissionState(BT_ALIAS) == PermissionState.DENIED) {
-                //Log.i("ESCPOSPlugin", "Permission is required for bluetooth");
-                call.reject("You have denied the permission. Go to app settings and give the permission manually. In alternative you can clear the data and the system will ask you again.");
-            }
+           if (getPermissionState(BT_ALIAS) == PermissionState.DENIED) {
+               //Log.i("ESCPOSPlugin", "Permission is required for bluetooth");
+               call.reject("You have denied the permission. Go to app settings and give the permission manually. In alternative you can clear the data and the system will ask you again.");
+           }
         }
     }
 
@@ -144,6 +144,51 @@ public class ESCPOSPlugin extends Plugin {
         call.resolve(printers);
     }
 
+    @PluginMethod
+    public void printFormattedText(PluginCall call) throws Exception {
+        try
+        {
+            JSONObject data = new JSObject();
+            data.put("action", call.getString("action"));
+            data.put("mmFeedPaper", call.getString("mmFeedPaper"));
+            data.put("id", call.getString("id"));
+            data.put("address", call.getString("address"));
+            data.put("text", call.getString("text"));
+            data.put("type", call.getString("type"));
+            data.put("port", call.getString("port"));
+
+            EscPosPrinter printer = this.getPrinter(data);
+            try {
+                int dotsFeedPaper = data.has("mmFeedPaper")
+                        ? printer.mmToPx((float) data.getDouble("mmFeedPaper"))
+                        : data.optInt("dotsFeedPaper", 20);
+                if (data.has("action") && data.getString("action").endsWith("Cut")) {
+                    printer.printFormattedTextAndCut(data.getString("text"), dotsFeedPaper);
+                } else {
+                    printer.printFormattedText(data.getString("text"), dotsFeedPaper);
+                }
+
+            } catch (EscPosConnectionException e) {
+                call.reject("Error",e.getMessage());
+                return;
+            } catch (Exception e) {
+                call.reject("Error",e.getMessage());
+                return;
+            }
+        }
+        catch(Exception ex)
+        {
+            call.reject(ex.getMessage(),"COD01");
+        }
+    }
+
+    @PluginMethod
+    public void logCat(PluginCall call)  {
+        String str = call.getString("message");
+        if (str != null)
+        Log.i("ESCPOSPlugin", str);
+    }
+
     //Remove start - Test only
     @PluginMethod
     public void echo(PluginCall call) {
@@ -182,45 +227,7 @@ public class ESCPOSPlugin extends Plugin {
     public void rejectTest(PluginCall call) throws Exception {
         call.reject("Error msg",new Exception("exception object"));
     }
-//Remove end - Test only
-
-    @PluginMethod
-    public void printFormattedText(PluginCall call) throws Exception {
-        try
-        {
-            JSONObject data = new JSObject();
-            data.put("action", call.getString("action"));
-            data.put("mmFeedPaper", call.getString("mmFeedPaper"));
-            data.put("id", call.getString("id"));
-            data.put("address", call.getString("address"));
-            data.put("text", call.getString("text"));
-            data.put("type", call.getString("type"));
-            data.put("port", call.getString("port"));
-
-            EscPosPrinter printer = this.getPrinter(data);
-            try {
-                int dotsFeedPaper = data.has("mmFeedPaper")
-                        ? printer.mmToPx((float) data.getDouble("mmFeedPaper"))
-                        : data.optInt("dotsFeedPaper", 20);
-                if (data.has("action") && data.getString("action").endsWith("Cut")) {
-                    printer.printFormattedTextAndCut(data.getString("text"), dotsFeedPaper);
-                } else {
-                    printer.printFormattedText(data.getString("text"), dotsFeedPaper);
-                }
-
-            } catch (EscPosConnectionException e) {
-                call.reject("Error",e.getMessage());
-                return;
-            } catch (Exception e) {
-                call.reject("Error",e.getMessage());
-                return;
-            }
-        }
-        catch(Exception ex)
-        {
-            call.reject(ex.getMessage(),"COD01");
-        }
-    }
+    //Remove end - Test only
 
     private JSONObject getEncoding(JSONObject data) throws Exception {
         EscPosPrinter printer = this.getPrinter(data);

@@ -13,34 +13,20 @@ npx cap sync
 
 <docgen-index>
 
-* [`echo(...)`](#echo)
 * [`bluetoothHasPermissions()`](#bluetoothhaspermissions)
 * [`bluetoothIsEnabled()`](#bluetoothisenabled)
 * [`listPrinters(...)`](#listprinters)
 * [`printFormattedText(...)`](#printformattedtext)
+* [`logCat(...)`](#logcat)
 * [`rejectTest()`](#rejecttest)
 * [`throwException()`](#throwexception)
+* [`echo(...)`](#echo)
 * [Interfaces](#interfaces)
 
 </docgen-index>
 
 <docgen-api>
 <!--Update the source file JSDoc comments and rerun docgen to update the docs below-->
-
-### echo(...)
-
-```typescript
-echo(options: { value: string; }) => Promise<{ value: string; }>
-```
-
-| Param         | Type                            |
-| ------------- | ------------------------------- |
-| **`options`** | <code>{ value: string; }</code> |
-
-**Returns:** <code>Promise&lt;{ value: string; }&gt;</code>
-
---------------------
-
 
 ### bluetoothHasPermissions()
 
@@ -92,6 +78,19 @@ printFormattedText(options: { type: string; id: string; address?: string; port?:
 --------------------
 
 
+### logCat(...)
+
+```typescript
+logCat(options: { message: string; }) => Promise<void>
+```
+
+| Param         | Type                              |
+| ------------- | --------------------------------- |
+| **`options`** | <code>{ message: string; }</code> |
+
+--------------------
+
+
 ### rejectTest()
 
 ```typescript
@@ -106,6 +105,21 @@ rejectTest() => Promise<void>
 ```typescript
 throwException() => Promise<void>
 ```
+
+--------------------
+
+
+### echo(...)
+
+```typescript
+echo(options: { value: string; }) => Promise<{ value: string; }>
+```
+
+| Param         | Type                            |
+| ------------- | ------------------------------- |
+| **`options`** | <code>{ value: string; }</code> |
+
+**Returns:** <code>Promise&lt;{ value: string; }&gt;</code>
 
 --------------------
 
