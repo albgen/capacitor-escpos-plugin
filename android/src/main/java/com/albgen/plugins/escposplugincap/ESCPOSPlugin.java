@@ -97,51 +97,92 @@ public class ESCPOSPlugin extends Plugin {
 
     @PluginMethod
     public void listPrinters(PluginCall call) throws Exception{
-        JSObject printers = new JSObject();
-        String type = call.getString("type");
-        if (type.equals("bluetooth")) {
-            if (!this.bluetoothHasPermissions()) {
-                requestPermissionForAliases(alsiasesPermissions, call, "BTPermsCallback");
-                //call.resolve(printers);
-                return;
-            }
-            if (!bluetoothIsEnabled()) {
-                return;
-            }
-            try {
-                BluetoothConnections printerConnections = new BluetoothConnections();
-                for (BluetoothConnection bluetoothConnection : printerConnections.getList()) {
-                    BluetoothDevice bluetoothDevice = bluetoothConnection.getDevice();
-                    JSONObject printerObj = new JSONObject();
-                    try { printerObj.put("address", bluetoothDevice.getAddress()); } catch (Exception ignored) {}  // String
-                    try { printerObj.put("bondState",  String.valueOf(bluetoothDevice.getBondState())); } catch (SecurityException ignored) {} // Ensure bondState is a string
-                    try { printerObj.put("name", bluetoothDevice.getName()); } catch (SecurityException ignored) {}  // String
-                    try { printerObj.put("type",  String.valueOf(bluetoothDevice.getType())); } catch (SecurityException ignored) {} // Convert type to string
-                    //try { printerObj.put("features", String.valueOf(bluetoothDevice.getUuids())); } catch (SecurityException ignored) {}  // Convert type to string
-                    try { printerObj.put("deviceClass", String.valueOf(bluetoothDevice.getBluetoothClass().getDeviceClass())); } catch (SecurityException ignored) {}
-                    try { printerObj.put("majorDeviceClass", String.valueOf(bluetoothDevice.getBluetoothClass().getMajorDeviceClass())); } catch (SecurityException ignored) {}  // Convert type to string
-                    try { printers.put(bluetoothDevice.getName(),printerObj);} catch (SecurityException ignored) {}
+        try {
+            JSObject printers = new JSObject();
+            String type = call.getString("type");
+            if (type.equals("bluetooth")) {
+                if (!bluetoothIsEnabled()) {
+                    throw new JSONException("Bluetooth not enabled");
                 }
-            } catch (Exception e) {
-                printers.put("error", e.getMessage());
-                call.resolve(printers);
-                return;
+                if (!bluetoothHasPermissions()) {
+                    askForBTPermissionIfNotHaveAlready(call);
+                    throw new JSONException("Missing permission for bluetooth");
+                }
+                try {
+                    BluetoothConnections printerConnections = new BluetoothConnections();
+                    for (BluetoothConnection bluetoothConnection : printerConnections.getList()) {
+                        BluetoothDevice bluetoothDevice = bluetoothConnection.getDevice();
+                        JSONObject printerObj = new JSONObject();
+                        try {
+                            printerObj.put("address", bluetoothDevice.getAddress());
+                        } catch (Exception ignored) {
+                        }  // String
+                        try {
+                            printerObj.put("bondState", String.valueOf(bluetoothDevice.getBondState()));
+                        } catch (SecurityException ignored) {
+                        } // Ensure bondState is a string
+                        try {
+                            printerObj.put("name", bluetoothDevice.getName());
+                        } catch (SecurityException ignored) {
+                        }  // String
+                        try {
+                            printerObj.put("type", String.valueOf(bluetoothDevice.getType()));
+                        } catch (SecurityException ignored) {
+                        } // Convert type to string
+                        //try { printerObj.put("features", String.valueOf(bluetoothDevice.getUuids())); } catch (SecurityException ignored) {}  // Convert type to string
+                        try {
+                            printerObj.put("deviceClass", String.valueOf(bluetoothDevice.getBluetoothClass().getDeviceClass()));
+                        } catch (SecurityException ignored) {
+                        }
+                        try {
+                            printerObj.put("majorDeviceClass", String.valueOf(bluetoothDevice.getBluetoothClass().getMajorDeviceClass()));
+                        } catch (SecurityException ignored) {
+                        }  // Convert type to string
+                        try {
+                            printers.put(bluetoothDevice.getName(), printerObj);
+                        } catch (SecurityException ignored) {
+                        }
+                    }
+                } catch (Exception e) {
+                    printers.put("error", e.getMessage());
+                    call.resolve(printers);
+                    return;
+                }
+            } else {
+                UsbConnections printerConnections = new UsbConnections(getContext());
+                for (UsbConnection usbConnection : printerConnections.getList()) {
+                    UsbDevice usbDevice = usbConnection.getDevice();
+                    JSONObject printerObj = new JSONObject();
+                    try {
+                        printerObj.put("productName", Objects.requireNonNull(usbDevice.getProductName()).trim());
+                    } catch (Exception ignored) {
+                    }
+                    try {
+                        printerObj.put("manufacturerName", usbDevice.getManufacturerName());
+                    } catch (Exception ignored) {
+                    }
+                    try {
+                        printerObj.put("deviceId", usbDevice.getDeviceId());
+                    } catch (Exception ignored) {
+                    }
+                    try {
+                        printerObj.put("serialNumber", usbDevice.getSerialNumber());
+                    } catch (Exception ignored) {
+                    }
+                    try {
+                        printerObj.put("vendorId", usbDevice.getVendorId());
+                    } catch (Exception ignored) {
+                    }
+                    printers.put(usbDevice.getDeviceName(), printerObj);
+                }
             }
-        } else {
-            UsbConnections printerConnections = new UsbConnections(getContext());
-            for (UsbConnection usbConnection : printerConnections.getList()) {
-                UsbDevice usbDevice = usbConnection.getDevice();
-                JSONObject printerObj = new JSONObject();
-                try { printerObj.put("productName", Objects.requireNonNull(usbDevice.getProductName()).trim()); } catch (Exception ignored) {}
-                try { printerObj.put("manufacturerName", usbDevice.getManufacturerName()); } catch (Exception ignored) {}
-                try { printerObj.put("deviceId", usbDevice.getDeviceId()); } catch (Exception ignored) {}
-                try { printerObj.put("serialNumber", usbDevice.getSerialNumber()); } catch (Exception ignored) {}
-                try { printerObj.put("vendorId", usbDevice.getVendorId()); } catch (Exception ignored) {}
-                printers.put(usbDevice.getDeviceName(),printerObj);
-            }
+            Log.i("Printer Object", printers.toString());
+            call.resolve(printers);
         }
-        Log.i("Printer Object", printers.toString());
-        call.resolve(printers);
+        catch(Exception ex)
+        {
+            call.reject(ex.getMessage(),"COD02");
+        }
     }
 
     @PluginMethod
@@ -156,6 +197,16 @@ public class ESCPOSPlugin extends Plugin {
             data.put("text", call.getString("text"));
             data.put("type", call.getString("type"));
             data.put("port", call.getString("port"));
+
+            if (call.getString("type").equals("bluetooth")) {
+                if (!bluetoothIsEnabled()) {
+                    throw new JSONException("Bluetooth not enabled");
+                }
+                if (!bluetoothHasPermissions()) {
+                    askForBTPermissionIfNotHaveAlready(call);
+                    throw new JSONException("Missing permission for bluetooth");
+                }
+            }
 
             EscPosPrinter printer = this.getPrinter(data);
             try {
@@ -186,7 +237,7 @@ public class ESCPOSPlugin extends Plugin {
     public void logCat(PluginCall call)  {
         String str = call.getString("message");
         if (str != null)
-        Log.i("ESCPOSPlugin", str);
+             Log.i("ESCPOSPlugin", str);
     }
 
     //Remove start - Test only
@@ -320,9 +371,7 @@ public class ESCPOSPlugin extends Plugin {
         }
 
         if (type.equals("bluetooth")) {
-            this.checkBluetooth();
             if (!bluetoothHasPermissions()) {
-                //Missing permission for " + Manifest.permission.DISABLE_KEYGUARD);
                 throw new JSONException("Missing permission for bluetooth");
             }
             if (id.equals("first")) {
@@ -385,6 +434,15 @@ public class ESCPOSPlugin extends Plugin {
             throw new Exception("Device doesn't support Bluetooth!");
         } else if (!mBluetoothAdapter.isEnabled()) {
             throw new Exception("Device not enabled Bluetooth!");
+        }
+    }
+
+    private void askForBTPermissionIfNotHaveAlready(PluginCall call) throws Exception
+    {
+        checkBluetooth();
+        if (!this.bluetoothHasPermissions()) {
+            requestPermissionForAliases(alsiasesPermissions, call, "BTPermsCallback");
+            return;
         }
     }
 }
