@@ -1,6 +1,6 @@
 import { WebPlugin } from '@capacitor/core';
 
-import type { ESCPOSPlugin, Printers } from './definitions';
+import type { ESCPOSPlugin, Printers } from './definitions.js';
 
 export class ESCPOSPluginWeb extends WebPlugin implements ESCPOSPlugin {
 
