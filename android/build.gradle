@@ -16,14 +16,6 @@ buildscript {
     }
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven { url 'https://jitpack.io' }  // Ensure JitPack is included for all projects
-    }
-}
-
 apply plugin: 'com.android.library'
 
 android {
@@ -54,9 +46,8 @@ android {
 repositories {
     google()
     mavenCentral()
-    maven { url 'https://jitpack.io' } // Ensure JitPack is available for dependencies
+    maven { url 'https://jitpack.io' }  // JitPack repository for plugin dependencies
 }
-
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -66,4 +57,15 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation 'com.github.DantSu:ESCPOS-ThermalPrinter-Android:3.4.0'
+}
+
+afterEvaluate {
+    // Inject JitPack repository into the consuming project
+    rootProject.allprojects {
+        repositories {
+            google()
+            mavenCentral()
+            maven { url 'https://jitpack.io' }
+        }
+    }
 }
