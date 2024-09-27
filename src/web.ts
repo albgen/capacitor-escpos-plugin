@@ -4,7 +4,6 @@ import type { ESCPOSPlugin, Printers } from './definitions.js';
 
 export class ESCPOSPluginWeb extends WebPlugin implements ESCPOSPlugin {
 
-
   async rejectTest(): Promise<void> {
     console.log('rejectTest not implemented on WEB');
     return Promise.resolve();
@@ -13,7 +12,7 @@ export class ESCPOSPluginWeb extends WebPlugin implements ESCPOSPlugin {
     console.log('throwException not implemented on WEB');
     return Promise.resolve();
   }
-  async printFormattedText(options: { type: string; id: string; address?: string; port?: string; action?: string; text: string; mmFeedPaper?: String; }): Promise<void> {
+  async printFormattedText(options: { type: string; id: string; address?: string; port?: string; action?: string; text: string; mmFeedPaper?: String; useEscPosAsterik?: boolean; }): Promise<void> {
     console.log('printFormattedText not implemented on WEB' + options);
     return Promise.resolve();
   }
