@@ -81,10 +81,10 @@ public class ESCPOSPlugin extends Plugin {
         if (getPermissionState(BT_ALIAS) == PermissionState.GRANTED) {
             Log.i("ESCPOSPlugin", "PermissionState.GRANTED already");
         } else {
-           if (getPermissionState(BT_ALIAS) == PermissionState.DENIED) {
-               //Log.i("ESCPOSPlugin", "Permission is required for bluetooth");
-               call.reject("You have denied the permission. Go to app settings and give the permission manually. In alternative you can clear the data and the system will ask you again.");
-           }
+            if (getPermissionState(BT_ALIAS) == PermissionState.DENIED) {
+                //Log.i("ESCPOSPlugin", "Permission is required for bluetooth");
+                call.reject("You have denied the permission. Go to app settings and give the permission manually. In alternative you can clear the data and the system will ask you again.");
+            }
         }
     }
 
@@ -197,7 +197,7 @@ public class ESCPOSPlugin extends Plugin {
             data.put("text", call.getString("text"));
             data.put("type", call.getString("type"));
             data.put("port", call.getString("port"));
-            data.put("useEscPosAsterik", call.getString("useEscPosAsterik"));
+            data.put("useEscPosAsterik", call.getBoolean("useEscPosAsterik", false));
             data.put("charsetEncoding", call.getObject("charsetEncoding"));
 
             if (call.getString("type").equals("bluetooth")) {
@@ -211,7 +211,7 @@ public class ESCPOSPlugin extends Plugin {
             }
 
             EscPosPrinter printer = this.getPrinter(data);
-            printer.useEscAsteriskCommand(data.optBoolean("useEscPosAsterik",false));
+            printer.useEscAsteriskCommand(data.getBoolean("useEscPosAsterik"));
 
             try {
                 int dotsFeedPaper = data.has("mmFeedPaper")
@@ -241,7 +241,7 @@ public class ESCPOSPlugin extends Plugin {
     public void logCat(PluginCall call)  {
         String str = call.getString("message");
         if (str != null)
-             Log.i("ESCPOSPlugin", str);
+            Log.i("ESCPOSPlugin", str);
     }
 
     //Remove start - Test only
