@@ -2,7 +2,7 @@ export interface ESCPOSPlugin {
     bluetoothHasPermissions(): Promise<{result: boolean;}>;
     bluetoothIsEnabled(): Promise<{result: boolean;}>;
     listPrinters(options: {type: string;}): Promise<Printers>;
-    printFormattedText(options: { type: string; id: string; address?: string; port?: string; action?: string; text: string, mmFeedPaper?:String, useEscPosAsterik?: boolean;}): Promise<void>;
+    printFormattedText(options: { type: string; id: string; address?: string; port?: string; action?: string; text: string, mmFeedPaper?:String, useEscPosAsterik?: boolean, initializeBeforeSend?: boolean;}): Promise<void>;
     logCat(options: { message: string; }): Promise<void>;
     rejectTest(): Promise<void>;
     throwException(): Promise<void>;

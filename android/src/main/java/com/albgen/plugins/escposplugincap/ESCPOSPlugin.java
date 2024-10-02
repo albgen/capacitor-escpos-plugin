@@ -198,7 +198,9 @@ public class ESCPOSPlugin extends Plugin {
             data.put("type", call.getString("type"));
             data.put("port", call.getString("port"));
             data.put("useEscPosAsterik", call.getBoolean("useEscPosAsterik", false));
+            data.put("initializeBeforeSend", call.getBoolean("initializeBeforeSend", false));
             data.put("charsetEncoding", call.getObject("charsetEncoding"));
+
 
             if (call.getString("type").equals("bluetooth")) {
                 if (!bluetoothIsEnabled()) {
@@ -324,6 +326,11 @@ public class ESCPOSPlugin extends Plugin {
         } catch (Exception exception) {
             throw new JSONException(exception.getMessage());
         }
+
+        // This is a fix for alignement issue in Barcode https://github.com/DantSu/ESCPOS-ThermalPrinter-Android/issues/475
+        boolean initializeBeforeSend = data.optBoolean("initializeBeforeSend",false);
+        if (initializeBeforeSend)
+            deviceConnection.write(new byte[]{ 0x1B, 0x40});
 
         try {
             return new EscPosPrinter(
