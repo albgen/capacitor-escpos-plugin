@@ -226,7 +226,7 @@ public class ESCPOSPlugin extends Plugin {
                 }
                 if (!bluetoothHasPermissions()) {
                     askForBTPermissionIfNotHaveAlready(call);
-                    return;
+                    throw new JSONException("Missing permission for bluetooth");
                 }
             }
 
@@ -391,7 +391,7 @@ public class ESCPOSPlugin extends Plugin {
 
     private DeviceConnection getDevice(String type, String id, String address, int port) throws Exception {
         String hashKey = type + "-" + id;
-        if (this.connections.containsKey(hashKey)) {
+        if (!(type.equals("tcp") && this.connections.containsKey(hashKey))) {
             DeviceConnection connection = this.connections.get(hashKey);
             if (connection != null) {
                 if (connection.isConnected()) {
