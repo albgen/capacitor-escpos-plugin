@@ -226,7 +226,7 @@ public class ESCPOSPlugin extends Plugin {
                 }
                 if (!bluetoothHasPermissions()) {
                     askForBTPermissionIfNotHaveAlready(call);
-                    throw new JSONException("Missing permission for bluetooth");
+                    return;
                 }
             }
 
