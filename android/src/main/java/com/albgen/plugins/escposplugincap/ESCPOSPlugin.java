@@ -71,28 +71,46 @@ public class ESCPOSPlugin extends Plugin {
 
     @PluginMethod
     public void bluetoothHasPermissions(PluginCall call) {
-        JSObject ret = new JSObject();
-        ret.put("result", bluetoothHasPermissions());
-        call.resolve(ret);
+        try
+        {
+            JSObject ret = new JSObject();
+            ret.put("result", bluetoothHasPermissions());
+            call.resolve(ret);
+        } catch (Exception ex) {
+            call.reject(ex.getMessage(),"COD06");
+        }
     }
 
     @PermissionCallback
     private void BTPermsCallback(PluginCall call) {
-        if (getPermissionState(BT_ALIAS) == PermissionState.GRANTED) {
-            Log.i("ESCPOSPlugin", "PermissionState.GRANTED already");
-        } else {
-            if (getPermissionState(BT_ALIAS) == PermissionState.DENIED) {
-                //Log.i("ESCPOSPlugin", "Permission is required for bluetooth");
-                call.reject("You have denied the permission. Go to app settings and give the permission manually. In alternative you can clear the data and the system will ask you again.");
+        try
+        {
+            if (getPermissionState(BT_ALIAS) == PermissionState.GRANTED) {
+                Log.i("ESCPOSPlugin", "PermissionState.GRANTED already");
+            } else {
+                if (getPermissionState(BT_ALIAS) == PermissionState.DENIED) {
+                    //Log.i("ESCPOSPlugin", "Permission is required for bluetooth");
+                    call.reject("You have denied the permission. Go to app settings and give the permission manually. In alternative you can clear the data and the system will ask you again.");
+                }
             }
+        }
+        catch(Exception ex)
+        {
+            call.reject(ex.getMessage(),"COD04");
         }
     }
 
     @PluginMethod
     public void bluetoothIsEnabled(PluginCall call) throws Exception {
-        JSObject ret = new JSObject();
-        ret.put("result", bluetoothIsEnabled());
-        call.resolve(ret);
+        try
+        {
+            JSObject ret = new JSObject();
+            ret.put("result", bluetoothIsEnabled());
+            call.resolve(ret);
+        } catch(Exception ex)
+        {
+            call.reject(ex.getMessage(),"COD03");
+        }
     }
 
     @PluginMethod
@@ -239,9 +257,14 @@ public class ESCPOSPlugin extends Plugin {
 
     @PluginMethod
     public void logCat(PluginCall call)  {
-        String str = call.getString("message");
-        if (str != null)
-            Log.i("ESCPOSPlugin", str);
+        try
+        {
+            String str = call.getString("message");
+            if (str != null)
+                Log.i("ESCPOSPlugin", str);
+        } catch (Exception e) {
+            call.reject(e.getMessage(),"COD05");
+        }
     }
 
     //Remove start - Test only
