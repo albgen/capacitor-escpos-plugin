@@ -226,11 +226,9 @@ public class ESCPOSPlugin extends Plugin {
                 }
 
             } catch (EscPosConnectionException e) {
-                call.reject("Error",e.getMessage());
-                return;
+                throw new JSONException("EscPosConnectionException: " + e.getMessage());
             } catch (Exception e) {
-                call.reject("Error",e.getMessage());
-                return;
+                throw new JSONException("Exception: " + e.getMessage());
             }
         }
         catch(Exception ex)
