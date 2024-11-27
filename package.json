@@ -45,28 +45,28 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@capacitor/android": "^6.0.0",
-    "@capacitor/cli": "^6.0.0",
-    "@capacitor/core": "^6.0.0",
+    "@capacitor/android": "^6.2.0",
+    "@capacitor/cli": "^6.2.0",
+    "@capacitor/core": "^6.2.0",
     "@capacitor/docgen": "^0.2.2",
-    "@capacitor/ios": "^6.0.0",
+    "@capacitor/ios": "^6.2.0",
     "@ionic/eslint-config": "^0.4.0",
     "@ionic/prettier-config": "^4.0.0",
     "@ionic/swiftlint-config": "^2.0.0",
-    "eslint": "^9.10.0",
+    "eslint": "^9.15.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-import": "^2.30.0",
-    "eslint-scope": "^8.0.2",
-    "eslint-visitor-keys": "^4.0.0",
-    "prettier": "^3.3.3",
-    "prettier-plugin-java": "^2.6.4",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-scope": "^8.2.0",
+    "eslint-visitor-keys": "^4.2.0",
+    "prettier": "^3.4.1",
+    "prettier-plugin-java": "^2.6.5",
     "rimraf": "^6.0.1",
-    "rollup": "^4.21.2",
+    "rollup": "^4.27.4",
     "swiftlint": "^2.0.0",
-    "typescript": "^5.5.4"
+    "typescript": "^5.7.2"
   },
   "peerDependencies": {
-    "@capacitor/core": "^5.0.0"
+    "@capacitor/core": "^6.2.0"
   },
   "prettier": "@ionic/prettier-config",
   "swiftlint": "@ionic/swiftlint-config",
