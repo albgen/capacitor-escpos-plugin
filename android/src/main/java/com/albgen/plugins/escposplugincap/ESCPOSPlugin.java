@@ -60,8 +60,7 @@ public class ESCPOSPlugin extends Plugin {
 
     // The same as defined in alias at @Permission
     private static final String BT_ALIAS = "BT";
-    private static String[] alsiasesPermissions = new String[]{BT_ALIAS};
-
+    private static final String[] aliasesPermissions = new String[]{BT_ALIAS};
     private final HashMap<String, DeviceConnection> connections = new HashMap<>();
 
     @Override
@@ -271,7 +270,7 @@ public class ESCPOSPlugin extends Plugin {
     @PluginMethod
     public void echo(PluginCall call) {
 
-        requestPermissionForAliases(alsiasesPermissions, call, "BTPermsCallback");
+        requestPermissionForAliases(aliasesPermissions, call, "BTPermsCallback");
         String value = call.getString("value");
         JSObject ret = new JSObject();
 
@@ -473,7 +472,7 @@ public class ESCPOSPlugin extends Plugin {
     {
         checkBluetooth();
         if (!this.bluetoothHasPermissions()) {
-            requestPermissionForAliases(alsiasesPermissions, call, "BTPermsCallback");
+            requestPermissionForAliases(aliasesPermissions, call, "BTPermsCallback");
             return;
         }
     }
