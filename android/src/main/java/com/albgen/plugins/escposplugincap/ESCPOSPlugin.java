@@ -217,7 +217,7 @@ public class ESCPOSPlugin extends Plugin {
             data.put("useEscPosAsterik", call.getBoolean("useEscPosAsterik", false));
             data.put("initializeBeforeSend", call.getBoolean("initializeBeforeSend", false));
             data.put("charsetEncoding", call.getObject("charsetEncoding"));
-
+            data.put("sendDelay", call.getString("sendDelay","0")); 
 
             if (call.getString("type").equals("bluetooth")) {
                 if (!bluetoothIsEnabled()) {
@@ -269,7 +269,7 @@ public class ESCPOSPlugin extends Plugin {
     //Remove start - Test only
     @PluginMethod
     public void echo(PluginCall call) {
-
+ 
         requestPermissionForAliases(aliasesPermissions, call, "BTPermsCallback");
         String value = call.getString("value");
         JSObject ret = new JSObject();
@@ -368,12 +368,15 @@ public class ESCPOSPlugin extends Plugin {
     private DeviceConnection getPrinterConnection(JSONObject data) throws Exception {
         String type = data.getString("type");
         String id = data.getString("id");
+        String sendDelay =  data.getString("sendDelay");
         String hashKey = type + "-" + id;
+
         DeviceConnection deviceConnection = this.getDevice(
                 data.getString("type"),
                 data.optString("id"),
                 data.optString("address"),
-                data.optInt("port", 9100)
+                data.optInt("port", 9100),
+                data.optInt("sendDelay", 9100)
         );
         if (deviceConnection == null) {
             throw new JSONException(String.valueOf(new HashMap<String, Object>() {{
@@ -388,7 +391,7 @@ public class ESCPOSPlugin extends Plugin {
         return deviceConnection;
     }
 
-    private DeviceConnection getDevice(String type, String id, String address, int port) throws Exception {
+    private DeviceConnection getDevice(String type, String id, String address, int port, int sendDelay) throws Exception {
         String hashKey = type + "-" + id;
         if (!(type.equals("tcp") && this.connections.containsKey(hashKey))) {
             DeviceConnection connection = this.connections.get(hashKey);
@@ -411,15 +414,19 @@ public class ESCPOSPlugin extends Plugin {
             BluetoothConnections printerConnections = new BluetoothConnections();
             for (BluetoothConnection bluetoothConnection : printerConnections.getList()) {
                 BluetoothDevice bluetoothDevice = bluetoothConnection.getDevice();
+                bluetoothConnection.setSendDelay(sendDelay);
                 try { if (bluetoothDevice.getAddress().equals(id)) { return bluetoothConnection; } } catch (Exception ignored) {}
                 try { if (bluetoothDevice.getName().equals(id)) { return bluetoothConnection; } } catch (SecurityException ignored) {}
             }
         } else if (type.equals("tcp")) {
-            return new TcpConnection(address, port);
+            TcpConnection tcpConnection =  new TcpConnection(address, port);
+            tcpConnection.setSendDelay(sendDelay);
+            return tcpConnection;
         } else {
             UsbConnections printerConnections = new UsbConnections(this.getActivity());
             for (UsbConnection usbConnection : printerConnections.getList()) {
                 UsbDevice usbDevice = usbConnection.getDevice();
+                usbConnection.setSendDelay(sendDelay);
                 try { if (usbDevice.getDeviceId() == Integer.parseInt(id)) { return usbConnection; } } catch (Exception ignored) {}
                 try { if (Objects.requireNonNull(usbDevice.getProductName()).trim().equals(id)) { return usbConnection; } } catch (Exception ignored) {}
             }
