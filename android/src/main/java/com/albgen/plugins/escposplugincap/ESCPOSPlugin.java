@@ -376,7 +376,7 @@ public class ESCPOSPlugin extends Plugin {
                 data.optString("id"),
                 data.optString("address"),
                 data.optInt("port", 9100),
-                data.optInt("sendDelay", 9100)
+                data.optInt("sendDelay", 0)
         );
         if (deviceConnection == null) {
             throw new JSONException(String.valueOf(new HashMap<String, Object>() {{
