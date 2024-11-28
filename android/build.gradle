@@ -57,6 +57,7 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     api 'com.github.albgen:ESCPOS-ThermalPrinter-Android:3.4.11'
+    api 'com.google.zxing:core:3.4.0'
 }
 
 afterEvaluate {
