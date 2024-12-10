@@ -217,7 +217,8 @@ public class ESCPOSPlugin extends Plugin {
             data.put("useEscPosAsterik", call.getBoolean("useEscPosAsterik", false));
             data.put("initializeBeforeSend", call.getBoolean("initializeBeforeSend", false));
             data.put("charsetEncoding", call.getObject("charsetEncoding"));
-            data.put("sendDelay", call.getString("sendDelay","0")); 
+            data.put("sendDelay", call.getString("sendDelay","0"));
+            data.put("chunkSize", call.getString("chunkSize","0"));
 
             if (call.getString("type").equals("bluetooth")) {
                 if (!bluetoothIsEnabled()) {
@@ -231,6 +232,7 @@ public class ESCPOSPlugin extends Plugin {
 
             EscPosPrinter printer = this.getPrinter(data);
             printer.useEscAsteriskCommand(data.getBoolean("useEscPosAsterik"));
+            printer.setChunkSize(data.optInt("chunkSize",0));
 
             try {
                 int dotsFeedPaper = data.has("mmFeedPaper")

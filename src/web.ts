@@ -12,7 +12,7 @@ export class ESCPOSPluginWeb extends WebPlugin implements ESCPOSPlugin {
     console.log('throwException not implemented on WEB');
     return Promise.resolve();
   }
-  async printFormattedText(options: { type: string; id: string; address?: string; port?: string; action?: string; text: string; mmFeedPaper?: String; useEscPosAsterik?: boolean, initializeBeforeSend?: boolean , sendDelay?: string; }): Promise<void> {
+  async printFormattedText(options: { type: string; id: string; address?: string; port?: string; action?: string; text: string; mmFeedPaper?: String; useEscPosAsterik?: boolean, initializeBeforeSend?: boolean , sendDelay?: string; chunkSize?: string }): Promise<void> {
     console.log('printFormattedText not implemented on WEB' + options);
     return Promise.resolve();
   }

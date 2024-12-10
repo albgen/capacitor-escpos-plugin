@@ -68,12 +68,12 @@ listPrinters(options: { type: string; }) => Promise<Printers>
 ### printFormattedText(...)
 
 ```typescript
-printFormattedText(options: { type: string; id: string; address?: string; port?: string; action?: string; text: string; mmFeedPaper?: String; useEscPosAsterik?: boolean; initializeBeforeSend?: boolean; sendDelay?: string; }) => Promise<void>
+printFormattedText(options: { type: string; id: string; address?: string; port?: string; action?: string; text: string; mmFeedPaper?: String; useEscPosAsterik?: boolean; initializeBeforeSend?: boolean; sendDelay?: string; chunkSize?: string; }) => Promise<void>
 ```
 
-| Param         | Type                                                                                                                                                                                                                                   |
-| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`options`** | <code>{ type: string; id: string; address?: string; port?: string; action?: string; text: string; mmFeedPaper?: <a href="#string">String</a>; useEscPosAsterik?: boolean; initializeBeforeSend?: boolean; sendDelay?: string; }</code> |
+| Param         | Type                                                                                                                                                                                                                                                       |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`options`** | <code>{ type: string; id: string; address?: string; port?: string; action?: string; text: string; mmFeedPaper?: <a href="#string">String</a>; useEscPosAsterik?: boolean; initializeBeforeSend?: boolean; sendDelay?: string; chunkSize?: string; }</code> |
 
 --------------------
 
