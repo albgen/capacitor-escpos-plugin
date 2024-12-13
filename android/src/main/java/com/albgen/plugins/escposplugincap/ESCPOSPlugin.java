@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 
+import com.dantsu.escposprinter.EscPosPrinterCommands;
 import com.dantsu.escposprinter.exceptions.EscPosConnectionException;
 import com.dantsu.escposprinter.connection.bluetooth.BluetoothConnections;
 import com.getcapacitor.Bridge;
@@ -352,7 +353,7 @@ public class ESCPOSPlugin extends Plugin {
         // This is a fix for alignement issue in Barcode https://github.com/DantSu/ESCPOS-ThermalPrinter-Android/issues/475
         boolean initializeBeforeSend = data.optBoolean("initializeBeforeSend",false);
         if (initializeBeforeSend)
-            deviceConnection.write(new byte[]{ 0x1B, 0x40});
+            deviceConnection.write(EscPosPrinterCommands.RESET_PRINTER);
 
         try {
             return new EscPosPrinter(
