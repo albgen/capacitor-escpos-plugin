@@ -422,6 +422,7 @@ public class ESCPOSPlugin extends Plugin {
                 try { if (bluetoothDevice.getName().equals(id)) { return bluetoothConnection; } } catch (SecurityException ignored) {}
             }
         } else if (type.equals("tcp")) {
+            address = id;
             TcpConnection tcpConnection =  new TcpConnection(address, port);
             tcpConnection.setSendDelay(sendDelay);
             return tcpConnection;
